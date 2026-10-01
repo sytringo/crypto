@@ -3,31 +3,31 @@
 // x runs from 0 (off-chain, the fiat world) to 1 (on-chain).
 
 export const LAYERS = [
-  { id: 'users', n: '01', name: '用户', en: 'Demand', color: '#476a57', title: '用户与资金来源', one: '谁把钱带进来' },
-  { id: 'access', n: '02', name: '入口', en: 'Access', color: '#6467a3', title: '入口与通道', one: '从哪里进出这个世界' },
-  { id: 'cefi', n: '03', name: '中介', en: 'CeFi', color: '#896a2a', title: '中心化中介 CeFi', one: '替你保管、撮合、兑换的公司' },
-  { id: 'defi', n: '04', name: '协议', en: 'DeFi', color: '#a35b80', title: '链上协议 DeFi', one: '用代码代替中介' },
-  { id: 'assets', n: '05', name: '资产', en: 'Assets', color: '#a6603b', title: '资产本身', one: '在账本上流动的东西' },
-  { id: 'chain', n: '06', name: '公链', en: 'Chains', color: '#277762', title: '公链与基础设施', one: '账本本身，以及维护它的人' },
-  { id: 'outer', n: '07', name: '治理', en: 'Oversight', color: '#5f7285', title: '监管、合规与信息服务', one: '为行业提供规则、核验与信息支持' },
+  { id: 'users', n: '01', name: '用户', en: 'Demand', color: '#42744e', title: '用户与资金来源', one: '谁把钱带进来' },
+  { id: 'access', n: '02', name: '入口', en: 'Access', color: '#5d67b4', title: '入口与通道', one: '从哪里进出这个世界' },
+  { id: 'cefi', n: '03', name: '中介', en: 'CeFi', color: '#926619', title: '中心化中介 CeFi', one: '替你保管、撮合、兑换的公司' },
+  { id: 'defi', n: '04', name: '协议', en: 'DeFi', color: '#ad527c', title: '链上协议 DeFi', one: '用代码代替中介' },
+  { id: 'assets', n: '05', name: '资产', en: 'Assets', color: '#b25c36', title: '资产本身', one: '在账本上流动的东西' },
+  { id: 'chain', n: '06', name: '公链', en: 'Chains', color: '#1e7d83', title: '公链与基础设施', one: '账本本身，以及维护它的人' },
+  { id: 'outer', n: '07', name: '治理', en: 'Oversight', color: '#4b729c', title: '监管、合规与信息服务', one: '为行业提供规则、核验与信息支持' },
 ];
 
 // what moves along an arrow
 export const KINDS = {
-  fiat: { name: '法币', color: '#2b7081', desc: '银行里的钱：美元、港币、人民币' },
-  crypto: { name: '加密资产', color: '#a6603b', desc: 'BTC、ETH 等链上原生资产和代币' },
-  stable: { name: '稳定币', color: '#277762', desc: '锚定 1 美元的链上代币' },
-  claim: { name: '凭证 / 账面余额', color: '#75548f', desc: '别人欠你的记录：交易所余额、ETF 份额' },
+  fiat: { name: '法币', color: '#326ea5', desc: '银行里的钱：美元、港币、人民币' },
+  crypto: { name: '加密资产', color: '#b25c36', desc: 'BTC、ETH 等链上原生资产和代币' },
+  stable: { name: '稳定币', color: '#1e7d83', desc: '锚定 1 美元的链上代币' },
+  claim: { name: '凭证 / 账面余额', color: '#8052a2', desc: '别人欠你的记录：交易所余额、ETF 份额' },
   info: { name: '指令 / 数据', color: '#64776b', desc: '价格、签名、打包、上币，不是钱本身' },
 };
 
 // which ledger a step is written into
 export const LEDGERS = {
-  bank: { name: '银行账本', short: '银行', color: '#2b7081', desc: '银行和清算系统（SWIFT、FPS、ACH）里的记录' },
-  broker: { name: '证券账本', short: '证券', color: '#6467a3', desc: '券商、交易所和中央登记结算机构的记录' },
-  cex: { name: '交易所内部数据库', short: '内部', color: '#75548f', desc: '中心化公司自己的数据库，链上看不到' },
-  chain: { name: '区块链', short: '链上', color: '#a6603b', desc: '公开账本，任何人都能查' },
-  none: { name: '链下协议 / 合同', short: '合同', color: '#5f7285', desc: '合同、承诺、KYC 记录，不算转账' },
+  bank: { name: '银行账本', short: '银行', color: '#326ea5', desc: '银行和清算系统（SWIFT、FPS、ACH）里的记录' },
+  broker: { name: '证券账本', short: '证券', color: '#5d67b4', desc: '券商、交易所和中央登记结算机构的记录' },
+  cex: { name: '交易所内部数据库', short: '内部', color: '#8052a2', desc: '中心化公司自己的数据库，链上看不到' },
+  chain: { name: '区块链', short: '链上', color: '#b25c36', desc: '公开账本，任何人都能查' },
+  none: { name: '链下协议 / 合同', short: '合同', color: '#4b729c', desc: '合同、承诺、KYC 记录，不算转账' },
 };
 
 export const NODES = [

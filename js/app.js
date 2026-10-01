@@ -1,6 +1,6 @@
-import { NODE, FLOW, KINDS, LEDGERS, LAYERS } from './data.js';
-import { MapView } from './map.js';
-import { CHAPTERS } from './chapters.js';
+import { NODE, FLOW, KINDS, LEDGERS, LAYERS } from './data.js?v=20261002-stars';
+import { MapView } from './map.js?v=20261002-stars';
+import { CHAPTERS } from './chapters.js?v=20261002-stars';
 
 const $ = (s) => document.querySelector(s);
 const STEP_SECONDS = 3.8;
@@ -150,6 +150,10 @@ class App {
           const b = document.createElement('button');
           b.type = 'button';
           if (o.v === c.value) b.className = 'on';
+          if (o.color) {
+            b.classList.add('layer-option');
+            b.style.setProperty('--c', o.color);
+          }
           if (o.sub) b.title = o.sub;
           b.innerHTML = c.presets ? `<span>${o.text}</span><small>${o.sub}</small>` : `${o.color ? `<i style="--c:${o.color}"></i>` : ''}${o.text}`;
           b.setAttribute('aria-pressed', o.v === c.value);

@@ -1,5 +1,5 @@
 // Chapters: what each scene highlights on the map, its controls, its numbers and its story.
-import { LAYERS, NODES, NODE, FLOWS, FLOW, KINDS, LEDGERS, LINKS } from './data.js';
+import { LAYERS, NODES, NODE, FLOWS, FLOW, KINDS, LEDGERS, LINKS } from './data.js?v=20261002-stars';
 
 const LAYER = Object.fromEntries(LAYERS.map((l) => [l.id, l]));
 const color = (id) => LAYER[NODE[id].layer].color;
@@ -108,7 +108,7 @@ export const CHAPTERS = [
     ],
     story: () => `<h1>一张图看懂加密资产产业</h1>
       <p>从银行里的一美元，到链上的一枚代币，中间隔着<b>七层</b>、<b>三十多类参与者</b>。左边是法币的世界，右边是链上的世界，中间是在两边之间收费摆渡的公司。</p>
-      <p>地图上流动的小点，就是正在移动的东西：<span class="k-fiat">法币</span>、<span class="k-crypto">加密资产</span>、<span class="k-stable">稳定币</span>，还有常被误以为是“币”的<span class="k-claim">凭证</span>（交易所余额、ETF 份额）。</p>
+      <p>地图上流动的星光，代表正在移动的东西：<span class="k-fiat">法币</span>、<span class="k-crypto">加密资产</span>、<span class="k-stable">稳定币</span>，还有常被误以为是“币”的<span class="k-claim">凭证</span>（交易所余额、ETF 份额）。</p>
       <p>看懂这个产业只需要问三个问题：<b>谁</b>在参与？他们在<b>哪一层</b>？钱和币<b>记在谁的账上</b>？</p>
       <div class="cta-row"><button class="cta" data-go="layers">从七层结构开始 →</button><button class="cta ghost" data-go="flows">直接看钱怎么流</button></div>`,
     hint: () => '<b>点任意参与者</b>看它是谁',
