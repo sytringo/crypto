@@ -1,6 +1,6 @@
-import { NODE, FLOW, KINDS, LEDGERS, LAYERS } from './data.js?v=20261002-stars';
-import { MapView } from './map.js?v=20261002-stars';
-import { CHAPTERS } from './chapters.js?v=20261002-stars';
+import { NODE, FLOW, KINDS, LEDGERS, LAYERS } from './data.js?v=20261002-layer-lines';
+import { MapView } from './map.js?v=20261002-layer-lines';
+import { CHAPTERS } from './chapters.js?v=20261002-layer-lines';
 
 const $ = (s) => document.querySelector(s);
 const STEP_SECONDS = 3.8;
@@ -25,6 +25,7 @@ class App {
     this.map = new MapView($('#stage'), {
       onPick: (id) => this.select(id),
       onHover: (id, el) => this.hover(id, el),
+      onLayer: (id) => this.selectLayer(id),
     });
     this.buildDock();
     window.addEventListener('hashchange', () => this.route());
@@ -78,6 +79,13 @@ class App {
   select(id) {
     this.state.sel = id;
     if (this.chapter.id !== 'players') { location.hash = `players/${id}`; return; }
+    this.refresh(true);
+    $('#story').scrollTop = 0;
+  }
+  selectLayer(id) {
+    if (this.chapter.id !== 'layers' || !LAYER[id]) return;
+    this.state.layer = id;
+    this.hover(null);
     this.refresh(true);
     $('#story').scrollTop = 0;
   }

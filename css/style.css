@@ -63,9 +63,12 @@ button { font: inherit; color: inherit; }
 .axis { position: absolute; left: 0; right: 0; top: 0; height: 28px; display: flex; justify-content: space-between; align-items: center; padding: 0 14px 0 calc(var(--lbl, 84px) + 6px); font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.04em; pointer-events: none; z-index: 1; }
 .axis .off { color: var(--fiat); }
 .axis .on { color: var(--crypto); }
-#bands { position: absolute; inset: 0; }
+#bands { position: absolute; inset: 0; pointer-events: none; }
 .band { position: absolute; left: 0; right: 0; border-top: 1px solid color-mix(in srgb, var(--c) 16%, transparent); background: color-mix(in srgb, var(--c) 6%, transparent); transition: background 0.3s, opacity 0.3s; }
-.band .lbl { position: absolute; left: 0; top: 0; bottom: 0; width: var(--lbl, 84px); display: flex; flex-direction: column; justify-content: center; padding-left: 14px; gap: 1px; border-right: 1px solid color-mix(in srgb, var(--c) 18%, transparent); background: color-mix(in srgb, var(--c) 9%, transparent); }
+.band .lbl { position: absolute; z-index: 2; left: 0; top: 0; bottom: 0; width: var(--lbl, 84px); display: flex; flex-direction: column; align-items: flex-start; justify-content: center; margin: 0; padding: 0 0 0 14px; gap: 1px; border: 0; border-right: 1px solid color-mix(in srgb, var(--c) 18%, transparent); border-radius: 0; text-align: left; background: color-mix(in srgb, var(--c) 9%, transparent); }
+.band .lbl:not(:disabled) { pointer-events: auto; cursor: pointer; }
+.band .lbl:not(:disabled):hover { background: color-mix(in srgb, var(--c) 20%, transparent); }
+.band .lbl:focus-visible { outline: 2px solid var(--c); outline-offset: -3px; }
 .band .lbl small { font-family: var(--mono); font-size: 10.5px; color: var(--faint); }
 .band .lbl b { font-size: 14px; font-weight: 700; color: var(--c); letter-spacing: 0.02em; }
 .band .lbl em { font-style: normal; font-family: var(--mono); font-size: 10px; color: var(--faint); text-transform: uppercase; letter-spacing: 0.08em; }

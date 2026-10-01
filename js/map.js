@@ -1,6 +1,6 @@
 // The map: seven layer bands, one chip per participant, and a canvas underneath
 // that draws the links and the moving money.
-import { LAYERS, NODES, NODE, LINKS, KINDS } from './data.js?v=20261002-stars';
+import { LAYERS, NODES, NODE, LINKS, KINDS } from './data.js?v=20261002-layer-lines';
 
 const LAYER = Object.fromEntries(LAYERS.map((l) => [l.id, l]));
 const ROW = Object.fromEntries(LAYERS.map((l, i) => [l.id, i]));
@@ -19,7 +19,7 @@ function ambientKind(a, b) {
 }
 
 export class MapView {
-  constructor(stage, { onPick, onHover } = {}) {
+  constructor(stage, { onPick, onHover, onLayer } = {}) {
     this.stage = stage;
     this.bandsEl = stage.querySelector('#bands');
     this.nodesEl = stage.querySelector('#nodes');
@@ -30,6 +30,7 @@ export class MapView {
     this.tctx = this.top.getContext('2d');
     this.onPick = onPick;
     this.onHover = onHover;
+    this.onLayer = onLayer;
     this.pos = {};
     this.chips = {};
     this.bands = {};
@@ -47,7 +48,8 @@ export class MapView {
       const b = document.createElement('div');
       b.className = 'band';
       b.style.setProperty('--c', L.color);
-      b.innerHTML = `<div class="lbl"><small>${L.n}</small><b>${L.name}</b><em>${L.en}</em></div>`;
+      b.innerHTML = `<button type="button" class="lbl" aria-label="查看第 ${L.n} 层：${L.name}" disabled><small>${L.n}</small><b>${L.name}</b><em>${L.en}</em></button>`;
+      b.querySelector('.lbl').addEventListener('click', () => this.onLayer && this.onLayer(L.id));
       this.bandsEl.appendChild(b);
       this.bands[L.id] = b;
     }
@@ -156,6 +158,10 @@ export class MapView {
     for (const L of LAYERS) {
       this.bands[L.id].classList.toggle('hi', v.layer === L.id);
       this.bands[L.id].classList.toggle('lo', !!v.layer && v.layer !== L.id);
+      const label = this.bands[L.id].querySelector('.lbl');
+      label.disabled = !v.layerNavigation;
+      if (v.layerNavigation) label.setAttribute('aria-pressed', v.layer === L.id);
+      else label.removeAttribute('aria-pressed');
     }
     if (!v.ambient) this.amb.length = 0;
   }
@@ -200,6 +206,28 @@ export class MapView {
     g.moveTo(...c[0]);
     g.bezierCurveTo(...c[1], ...c[2], ...c[3]);
     g.stroke();
+    g.restore();
+  }
+  luminousLine(c, color, alpha, time) {
+    const g = this.ctx;
+    g.save();
+    g.shadowColor = color;
+    g.shadowBlur = 7;
+    const shimmer = this.motionQuery.matches ? 1 : 0.9 + 0.1 * Math.sin(time * 1.4);
+    this.stroke(c, color, Math.min(1, alpha + 0.2) * shimmer, 1.6);
+    // A soft highlight travels along the continuous line.
+    if (!this.motionQuery.matches) {
+      const head = (time * 0.18 + c[0][0] / Math.max(1, this.W)) % 1.18;
+      const start = Math.max(0, head - 0.18), end = Math.min(1, head);
+      g.globalAlpha = 0.6;
+      g.strokeStyle = color;
+      g.lineWidth = 2.8;
+      g.lineCap = 'round';
+      g.beginPath();
+      g.moveTo(...MapView.at(c, start));
+      for (let i = 1; i <= 12; i++) g.lineTo(...MapView.at(c, start + (end - start) * i / 12));
+      g.stroke();
+    }
     g.restore();
   }
   arrow(c, t, color, alpha, size = 5) {
@@ -301,6 +329,10 @@ export class MapView {
     for (const [a, b, color, alpha] of v.links || []) {
       const c = this.curve(a, b);
       if (c) {
+        if (v.linkStyle === 'solid') {
+          this.luminousLine(c, color || '#42744e', alpha ?? 0.5, visualTime);
+          continue;
+        }
         this.starTrail(c, color || '#42744e', visualTime, alpha ?? 0.5, 3.2);
         const f = (visualTime * 0.25 + (a.length + b.length) * 0.13) % 1;
         const [x, y] = MapView.at(c, f);

@@ -1,5 +1,5 @@
 // Chapters: what each scene highlights on the map, its controls, its numbers and its story.
-import { LAYERS, NODES, NODE, FLOWS, FLOW, KINDS, LEDGERS, LINKS } from './data.js?v=20261002-stars';
+import { LAYERS, NODES, NODE, FLOWS, FLOW, KINDS, LEDGERS, LINKS } from './data.js?v=20261002-layer-lines';
 
 const LAYER = Object.fromEntries(LAYERS.map((l) => [l.id, l]));
 const color = (id) => LAYER[NODE[id].layer].color;
@@ -123,12 +123,12 @@ export const CHAPTERS = [
       const ids = NODES.filter((n) => n.layer === L).map((n) => n.id);
       const set = new Set(ids);
       const links = LINKS.filter(([a, b]) => set.has(a) || set.has(b)).map(([a, b]) => [a, b, LAYER[L].color, 0.28]);
-      return { layer: L, focus: new Set([...ids, ...links.flatMap(([a, b]) => [a, b])]), links, dimOthers: true };
+      return { layer: L, focus: new Set([...ids, ...links.flatMap(([a, b]) => [a, b])]), links, linkStyle: 'solid', layerNavigation: true, dimOthers: true };
     },
     controls: (app) => [{
       type: 'seg', label: '选一层', value: app.state.layer,
       options: LAYERS.map((l) => ({ v: l.id, text: `${l.n} ${l.name}`, color: l.color })),
-      onChange: (v) => { app.state.layer = v; app.refresh(); },
+      onChange: (v) => app.selectLayer(v),
     }],
     stats: (app) => {
       const L = LAYER[app.state.layer];
@@ -150,7 +150,7 @@ export const CHAPTERS = [
         <h4>这一层的参与者（点开看代表机构）</h4><div class="chips">${ns.map((n) => chip(n.id)).join('')}</div>
         <div class="cta-row"><button class="cta ghost" data-layer="${next.id}">下一层：${next.name} →</button></div>`;
     },
-    hint: () => '<b>点一个参与者</b>看它是谁 · 右上角换层',
+    hint: () => '<b>点左侧标签</b>切换分层 · 点参与者看详情',
   },
 
   // ---------------------------------------------------------------- players
