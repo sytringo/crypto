@@ -3,38 +3,38 @@
 // x runs from 0 (off-chain, the fiat world) to 1 (on-chain).
 
 export const LAYERS = [
-  { id: 'users', n: '01', name: '用户', en: 'Demand', color: '#eceef3', title: '用户与资金来源', one: '谁把钱带进来' },
-  { id: 'access', n: '02', name: '入口', en: 'Access', color: '#9fb0ff', title: '入口与通道', one: '从哪里进出这个世界' },
-  { id: 'cefi', n: '03', name: '中介', en: 'CeFi', color: '#ffc94d', title: '中心化中介 CeFi', one: '替你保管、撮合、兑换的公司' },
-  { id: 'defi', n: '04', name: '协议', en: 'DeFi', color: '#ff7eb6', title: '链上协议 DeFi', one: '用代码代替中介' },
-  { id: 'assets', n: '05', name: '资产', en: 'Assets', color: '#ff9147', title: '资产本身', one: '在账本上流动的东西' },
-  { id: 'chain', n: '06', name: '公链', en: 'Chains', color: '#45e0b5', title: '公链与基础设施', one: '账本本身，以及维护它的人' },
-  { id: 'outer', n: '07', name: '外围', en: 'Oversight', color: '#8d919c', title: '监管、合规与外围', one: '看着、查着、审着这一切的人' },
+  { id: 'users', n: '01', name: '用户', en: 'Demand', color: '#476a57', title: '用户与资金来源', one: '谁把钱带进来' },
+  { id: 'access', n: '02', name: '入口', en: 'Access', color: '#6467a3', title: '入口与通道', one: '从哪里进出这个世界' },
+  { id: 'cefi', n: '03', name: '中介', en: 'CeFi', color: '#896a2a', title: '中心化中介 CeFi', one: '替你保管、撮合、兑换的公司' },
+  { id: 'defi', n: '04', name: '协议', en: 'DeFi', color: '#a35b80', title: '链上协议 DeFi', one: '用代码代替中介' },
+  { id: 'assets', n: '05', name: '资产', en: 'Assets', color: '#a6603b', title: '资产本身', one: '在账本上流动的东西' },
+  { id: 'chain', n: '06', name: '公链', en: 'Chains', color: '#277762', title: '公链与基础设施', one: '账本本身，以及维护它的人' },
+  { id: 'outer', n: '07', name: '治理', en: 'Oversight', color: '#5f7285', title: '监管、合规与信息服务', one: '为行业提供规则、核验与信息支持' },
 ];
 
 // what moves along an arrow
 export const KINDS = {
-  fiat: { name: '法币', color: '#4cc9ff', desc: '银行里的钱：美元、港币、人民币' },
-  crypto: { name: '加密资产', color: '#ff9147', desc: 'BTC、ETH 等链上原生资产和代币' },
-  stable: { name: '稳定币', color: '#45e0b5', desc: '锚定 1 美元的链上代币' },
-  claim: { name: '凭证 / 账面余额', color: '#b48cff', desc: '别人欠你的记录：交易所余额、ETF 份额' },
-  info: { name: '指令 / 数据', color: '#d9dce3', desc: '价格、签名、打包、上币，不是钱本身' },
+  fiat: { name: '法币', color: '#2b7081', desc: '银行里的钱：美元、港币、人民币' },
+  crypto: { name: '加密资产', color: '#a6603b', desc: 'BTC、ETH 等链上原生资产和代币' },
+  stable: { name: '稳定币', color: '#277762', desc: '锚定 1 美元的链上代币' },
+  claim: { name: '凭证 / 账面余额', color: '#75548f', desc: '别人欠你的记录：交易所余额、ETF 份额' },
+  info: { name: '指令 / 数据', color: '#64776b', desc: '价格、签名、打包、上币，不是钱本身' },
 };
 
 // which ledger a step is written into
 export const LEDGERS = {
-  bank: { name: '银行账本', short: '银行', color: '#4cc9ff', desc: '银行和清算系统（SWIFT、FPS、ACH）里的记录' },
-  broker: { name: '证券账本', short: '证券', color: '#9fb0ff', desc: '券商、交易所和中央登记结算机构的记录' },
-  cex: { name: '交易所内部数据库', short: '内部', color: '#b48cff', desc: '中心化公司自己的数据库，链上看不到' },
-  chain: { name: '区块链', short: '链上', color: '#ff9147', desc: '公开账本，任何人都能查' },
-  none: { name: '链下协议 / 合同', short: '合同', color: '#8d919c', desc: '合同、承诺、KYC 记录，不算转账' },
+  bank: { name: '银行账本', short: '银行', color: '#2b7081', desc: '银行和清算系统（SWIFT、FPS、ACH）里的记录' },
+  broker: { name: '证券账本', short: '证券', color: '#6467a3', desc: '券商、交易所和中央登记结算机构的记录' },
+  cex: { name: '交易所内部数据库', short: '内部', color: '#75548f', desc: '中心化公司自己的数据库，链上看不到' },
+  chain: { name: '区块链', short: '链上', color: '#a6603b', desc: '公开账本，任何人都能查' },
+  none: { name: '链下协议 / 合同', short: '合同', color: '#5f7285', desc: '合同、承诺、KYC 记录，不算转账' },
 };
 
 export const NODES = [
   // ---------------------------------------------------------------- 01 users
   {
     id: 'treasury', layer: 'users', x: 0.1, name: '币股公司', full: '加密金库公司 · Crypto treasury companies',
-    role: '上市公司发债、增发股票，用募来的钱买 BTC 或 ETH 放在资产负债表上。股民买它的股票，等于间接持币，还带杠杆。',
+    role: '上市公司发债、增发股票，用募来的钱买 BTC 或 ETH 放在资产负债表上。投资者买它的股票，等于间接持币，还带杠杆。',
     who: ['Strategy（前 MicroStrategy，持有超过 60 万枚 BTC）', 'Metaplanet（日本）', 'BitMine、SharpLink（ETH 金库）'],
     earn: '赚币价上涨和股价相对持币价值的溢价（mNAV）。溢价越高，发股买币越划算。',
     risk: '溢价消失时，靠增发买币的循环会反转；债务到期可能被迫卖币。',
@@ -47,10 +47,10 @@ export const NODES = [
     risk: '对手方风险：2022 年很多机构的钱就放在后来倒闭的借贷平台和交易所里。',
   },
   {
-    id: 'retail', layer: 'users', x: 0.5, name: '散户', full: '个人投资者 · Retail',
+    id: 'retail', layer: 'users', x: 0.5, name: '个人投资者', full: '个人投资者 · Retail',
     role: '全球数以亿计的持币人。大多数人通过交易所 App 买币，一部分人把币提到自己的钱包，参与 DeFi、空投和 Meme 币。',
-    who: ['交易所用户（Binance、Coinbase、OKX、Upbit 等）', '链上用户（MetaMask、Phantom 钱包）', '通过券商买 ETF 的普通股民'],
-    earn: '他们是付费方：交易手续费、点差、资金费率、Gas 费，最终大多由散户支付。',
+    who: ['交易所用户（Binance、Coinbase、OKX、Upbit 等）', '链上用户（MetaMask、Phantom 钱包）', '通过券商买 ETF 的个人投资者'],
+    earn: '他们是付费方：交易手续费、点差、资金费率、Gas 费，最终大多由个人投资者支付。',
     risk: '私钥丢失、诈骗、交易所倒闭、高杠杆爆仓。',
   },
   {
@@ -304,8 +304,8 @@ export const NODES = [
     risk: '刷量数据、付费软文。',
   },
   {
-    id: 'illicit', layer: 'outer', x: 0.92, name: '黑客 · 灰产', full: '黑客与非法资金 · Illicit actors',
-    role: '行业的阴影：国家级黑客组织、诈骗团伙、洗钱网络。他们也是“参与者”，而且推动了整个行业的安全和合规建设。',
+    id: 'illicit', layer: 'outer', x: 0.92, name: '安全威胁', full: '攻击者与非法活动 · Security threats',
+    role: '需要识别和防范的安全风险：国家级攻击组织、诈骗团伙和洗钱网络。了解其活动方式，有助于认识资产保护、追踪与合规的重要性。',
     who: ['朝鲜 Lazarus 集团（2025 年 Bybit 约 15 亿美元被盗）', '“杀猪盘”诈骗团伙', '混币器、灰色 OTC'],
     earn: '盗窃、诈骗、洗钱服务费。',
     risk: '对整个行业：每一次大案都会带来更严的监管。',
@@ -319,7 +319,7 @@ export const NODE = Object.fromEntries(NODES.map((n) => [n.id, n]));
 // from === to means something happens inside that participant.
 export const FLOWS = [
   {
-    id: 'buy', name: '散户买币', sub: '入金 → 撮合 → 提币',
+    id: 'buy', name: '个人投资者买币', sub: '入金 → 撮合 → 提币',
     intro: '最常见的一条路：银行卡里的钱进交易所，换成 BTC，再提到自己的钱包。注意看每一步记在哪一本账上。',
     steps: [
       { from: 'retail', to: 'cex', kind: 'info', amt: 'KYC 资料', ledger: 'none', rec: '开户 · KYC 通过 · 绑定银行卡', text: '先在交易所开户、做实名认证（KYC）。持牌交易所必须知道你是谁，这是它和银行合作的前提。' },
@@ -383,7 +383,7 @@ export const FLOWS = [
       { from: 'project', to: 'mm', kind: 'crypto', amt: '借出 2%', ledger: 'chain', rec: '做市协议 · 借出代币 + 看涨期权', text: '项目把一部分代币<b>借给做市商</b>，通常还附带期权。做市商负责在交易所挂单，保证上线后有人买得到、卖得掉。' },
       { from: 'project', to: 'cex', kind: 'info', amt: '上币申请', ledger: 'none', rec: '上币协议 · 可能包含营销预算、空投份额', text: '项目申请<b>上币</b>。大交易所的上币是稀缺资源：往往需要拿出代币做用户活动或空投，交易所自己也会审查项目。' },
       { from: 'project', to: 'retail', kind: 'crypto', amt: '空投', ledger: 'chain', rec: 'Airdrop · 50,000 个地址 · 各 xxx 枚', text: '早期用户收到<b>空投</b>。其中不少会立刻卖掉，这是第一波抛压。' },
-      { from: 'retail', to: 'cex', kind: 'stable', amt: '买入', ledger: 'cex', rec: '现货 XYZ/USDT · 开盘', text: '代币开盘交易。散户用稳定币买入，价格发现开始。因为流通量小，价格很容易被推高，账面“完全稀释估值”（FDV）可能高达几十亿美元。' },
+      { from: 'retail', to: 'cex', kind: 'stable', amt: '买入', ledger: 'cex', rec: '现货 XYZ/USDT · 开盘', text: '代币开盘交易。个人投资者用稳定币买入，价格发现开始。因为流通量小，价格很容易被推高，账面“完全稀释估值”（FDV）可能高达几十亿美元。' },
       { from: 'vc', to: 'cex', kind: 'crypto', amt: '解锁卖出', ledger: 'chain', rec: '12 个月后 · 解锁 1.5 亿枚 → 充值交易所', text: '一年后锁仓期结束，投资人和团队的代币开始<b>解锁</b>。成本极低的筹码逐步流向交易所卖出，这就是为什么很多新币上线后长期阴跌。' },
     ],
   },
@@ -409,7 +409,7 @@ export const FLOWS = [
     ],
   },
   {
-    id: 'hack', name: '黑客与追踪', sub: '被盗 → 洗钱 → 冻结',
+    id: 'hack', name: '安全事件与追踪', sub: '被盗 → 洗钱 → 冻结',
     intro: '2025 年 2 月，Bybit 被盗约 15 亿美元的 ETH，是史上最大的一次加密盗窃，FBI 认定是朝鲜 Lazarus 所为。公开账本让每一步都被看见。',
     steps: [
       { from: 'cex', to: 'illicit', kind: 'crypto', amt: '≈40 万 ETH', ledger: 'chain', rec: 'Ethereum · Bybit 冷钱包 → 攻击者地址 · ≈401,000 ETH', text: '攻击者入侵了多签钱包服务的开发环境，篡改了签名界面。Bybit 的签名人以为在做一笔例行转账，实际签下的是把<b>冷钱包</b>交出去。' },

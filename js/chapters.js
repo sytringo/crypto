@@ -12,13 +12,13 @@ const neighbours = (id) => LINKS.filter(([a, b]) => a === id || b === id).map(([
 
 // --------------------------------------------------------------- per-layer text
 const LAYER_TEXT = {
-  users: `<p>整个产业的钱最终来自这里。<b>散户</b>贡献了大部分手续费；<b>机构</b>在 2024 年现货 ETF 获批后大举进场；<b>风投</b>和<b>项目方</b>在最上游创造新的代币；<b>币股公司</b>则把股市里的钱搬进比特币。</p>
+  users: `<p>整个产业的钱最终来自这里。<b>个人投资者</b>贡献了大部分手续费；<b>机构</b>在 2024 年现货 ETF 获批后大举进场；<b>风投</b>和<b>项目方</b>在最上游创造新的代币；<b>币股公司</b>则把股市里的钱搬进比特币。</p>
     <p>注意他们的位置：越靠左，越习惯待在法币和证券的世界里；越靠右，越直接和链打交道。</p>`,
   access: `<p>你从哪扇门进来，决定了你“拥有”的究竟是什么。</p>
     <p>走<b>银行</b>和<b>券商</b>，你拿到的是法币存款或 ETF 份额；走<b>出入金服务</b>，你把法币换成币；走<b>自托管钱包</b>，你直接拿着私钥，链上认的就是你。</p>
     <p class="small">银行是整个行业的咽喉：没有银行愿意开户，交易所和稳定币发行方就收不了美元。</p>`,
   cefi: `<p>这一层是一群<b>公司</b>：交易所、托管、做市商、场外交易台、主经纪商、稳定币发行方。它们的共同点是替你<b>保管</b>和<b>记账</b>。</p>
-    <p>你在交易所看到的余额，只是它数据库里的数字。这带来速度和便利，也带来了行业里几乎所有的大灾难：Mt. Gox、FTX、Celsius。</p>
+    <p>你在交易所看到的余额，只是它数据库里的数字。这带来速度和便利，也需要关注资产保管与透明度。Mt. Gox、FTX、Celsius 的案例，让我们更清楚地认识这些风险。</p>
     <p><b>稳定币发行方</b>站在正中间的交界线上：一只脚在银行里放着储备，一只脚在链上铸造代币。</p>`,
   defi: `<p>把中介换成<b>智能合约</b>：交易所变成资金池（DEX），银行贷款变成超额抵押的借贷协议，券商的衍生品变成链上永续合约。</p>
     <p>没有开户，没有营业时间，任何人都能用，也没有人能替你撤回一笔签错的交易。</p>
@@ -29,15 +29,15 @@ const LAYER_TEXT = {
     <p>L1 是主账本；<b>L2</b> 在以太坊上面批量处理交易再提交回去；<b>预言机</b>把链外的价格送进来；<b>RPC 服务商</b>让钱包能读写区块链。</p>
     <p class="small">你的钱包里其实没有币。币一直在链上，钱包只保管能动它的私钥。</p>`,
   outer: `<p>不直接经手资金，却决定了资金能往哪里流：</p>
-    <ul><li><b>监管</b>发牌照、定规则：美国 GENIUS 法案（2025）、香港稳定币条例（2025 年 8 月生效）和 VATP 交易所牌照、欧盟 MiCA。</li><li><b>链上分析</b>公司把匿名地址和真实身份对上号。</li><li><b>审计</b>核对储备和代码。</li><li><b>数据媒体</b>告诉大家价格和故事。</li><li>还有<b>黑客和灰产</b>，行业安全和合规的最大推手。</li></ul>`,
+    <ul><li><b>监管</b>发牌照、定规则：美国 GENIUS 法案（2025）、香港稳定币条例（2025 年 8 月生效）和 VATP 交易所牌照、欧盟 MiCA。</li><li><b>链上分析</b>公司把匿名地址和真实身份对上号。</li><li><b>审计</b>核对储备和代码。</li><li><b>数据媒体</b>告诉大家价格和故事。</li><li><b>安全威胁</b>的识别与追踪，也让安全防护和合规能力持续进步。</li></ul>`,
 };
 
 // --------------------------------------------------------------- risk cases
 const CASES = [
-  { id: 'mtgox', name: 'Mt. Gox', sub: '2014 · 交易所', nodes: ['cex', 'retail'], text: '当时全球最大的比特币交易所，约 85 万枚 BTC 被盗后破产。用户等了十年才拿回部分资产。<b>教训：交易所里的币不是你的币。</b>' },
-  { id: 'terra', name: 'Terra / UST', sub: '2022.5 · 算法稳定币', nodes: ['stable', 'lending', 'retail'], text: 'UST 没有美元储备，靠和 LUNA 的兑换机制维持 1 美元。挤兑时机制反向螺旋，几天内数百亿美元蒸发，并直接引爆了下面的连锁倒闭。<b>教训：稳定币“稳”在储备，不在算法。</b>' },
-  { id: '3ac', name: '3AC · Celsius', sub: '2022.6 · 借贷连环爆', nodes: ['prime', 'inst', 'lending', 'retail'], text: '对冲基金三箭资本（3AC）高杠杆押注，在 Terra 崩盘后爆仓，向它放贷的 Celsius、Voyager、BlockFi、Genesis 等接连破产，冻结了大批散户的存款。<b>教训：CeFi 借贷是没有存款保险的影子银行。</b>' },
-  { id: 'ftx', name: 'FTX', sub: '2022.11 · 挪用客户资产', nodes: ['cex', 'mm', 'bank', 'retail'], text: '当时第二大交易所。客户的钱（有一部分甚至直接汇进了 Alameda 的银行账户）被秘密转给关联做市商 Alameda 去投资和还债，挤兑时约 80 亿美元的窟窿暴露。创始人 SBF 被判 25 年。<b>教训：内部数据库上的余额，要有真实资产对应。</b>之后“储备证明”成了标配。' },
+  { id: 'mtgox', name: 'Mt. Gox', sub: '2014 · 交易所', nodes: ['cex', 'retail'], text: '当时全球最大的比特币交易所，约 85 万枚 BTC 被盗后破产。用户等了十年才拿回部分资产。<b>防范启示：交易所里的币不是你的币。</b>' },
+  { id: 'terra', name: 'Terra / UST', sub: '2022.5 · 算法稳定币', nodes: ['stable', 'lending', 'retail'], text: 'UST 没有美元储备，靠和 LUNA 的兑换机制维持 1 美元。挤兑时机制反向螺旋，几天内数百亿美元蒸发，并直接引爆了下面的连锁倒闭。<b>防范启示：稳定币“稳”在储备，不在算法。</b>' },
+  { id: '3ac', name: '3AC · Celsius', sub: '2022.6 · 借贷风险传导', nodes: ['prime', 'inst', 'lending', 'retail'], text: '对冲基金三箭资本（3AC）高杠杆押注，在 Terra 崩盘后爆仓，向它放贷的 Celsius、Voyager、BlockFi、Genesis 等接连破产，冻结了大批个人投资者的存款。<b>防范启示：CeFi 借贷是没有存款保险的影子银行。</b>' },
+  { id: 'ftx', name: 'FTX', sub: '2022.11 · 挪用客户资产', nodes: ['cex', 'mm', 'bank', 'retail'], text: '当时第二大交易所。客户的钱（有一部分甚至直接汇进了 Alameda 的银行账户）被秘密转给关联做市商 Alameda 去投资和还债，挤兑时约 80 亿美元的窟窿暴露。创始人 SBF 被判 25 年。<b>防范启示：内部数据库上的余额，要有真实资产对应。</b>之后“储备证明”成了标配。' },
   { id: 'ronin', name: 'Ronin 桥', sub: '2022.3 · 跨链桥', nodes: ['bridge', 'illicit'], text: '游戏链 Ronin 的跨链桥只有 9 个验证者签名，攻击者拿到其中 5 个私钥，盗走约 6 亿美元。<b>跨链桥是链上被盗最多的环节。</b>' },
   { id: 'svb', name: 'USDC × SVB', sub: '2023.3 · 银行挤兑', nodes: ['bank', 'issuer', 'stable'], text: '硅谷银行倒闭，Circle 有 33 亿美元储备困在里面，USDC 一度跌到 0.88 美元，直到美国政府宣布保护全部存款才恢复。<b>链上的稳定，最终取决于链下的银行。</b>' },
   { id: 'bybit', name: 'Bybit 被盗', sub: '2025.2 · 回放全过程', nodes: [], flow: 'hack' },
@@ -193,7 +193,7 @@ export const CHAPTERS = [
         <h4>典型代表</h4><ul>${n.who.map((w) => `<li>${w}</li>`).join('')}</ul>
         <div class="facts">
           <div class="fact"><b class="t">怎么赚钱</b>${n.earn}</div>
-          <div class="fact bad"><b class="t">风险在哪</b>${n.risk}</div>
+          <div class="fact bad"><b class="t">需要关注的风险</b>${n.risk}</div>
         </div>
         ${fl.length ? `<h4>它出现在这些资金流里</h4><div class="chips">${fl.map((f) => `<button class="chip" data-flow="${f.id}"><i style="--c:${KINDS[f.steps[0].kind].color}"></i>${f.name}</button>`).join('')}</div>` : ''}
         <h4>和它直接打交道的</h4><div class="chips">${neighbours(n.id).map(chip).join('')}</div>`;
@@ -246,7 +246,7 @@ export const CHAPTERS = [
 
   // ---------------------------------------------------------------- risk
   {
-    id: 'risk', title: '风险', sub: '出事的地方',
+    id: 'risk', title: '风险', sub: '理解与防范',
     enter(app) {
       app.state.case = app.state.case || 'ftx';
       if (app.state.case === 'bybit') enterFlow(app, ['hack']);
@@ -256,14 +256,14 @@ export const CHAPTERS = [
       if (c.flow) return flowView(app);
       const bad = new Set(c.nodes);
       const links = [];
-      for (let i = 0; i < c.nodes.length; i++) for (let j = i + 1; j < c.nodes.length; j++) links.push([c.nodes[i], c.nodes[j], '#ff5d5d', 0.45]);
+      for (let i = 0; i < c.nodes.length; i++) for (let j = i + 1; j < c.nodes.length; j++) links.push([c.nodes[i], c.nodes[j], '#b44f5d', 0.45]);
       return { bad, focus: new Set([...c.nodes, 'reg', 'audit', 'analytics']), links };
     },
     ledger: (app) => !!CASES.find((x) => x.id === app.state.case).flow,
     controls: (app) => {
       const c = CASES.find((x) => x.id === app.state.case);
       const ctl = [{
-        type: 'seg', label: '历史上的大事故', value: app.state.case, presets: true,
+        type: 'seg', label: '从案例认识风险', value: app.state.case, presets: true,
         options: CASES.map((x) => ({ v: x.id, text: x.name, sub: x.sub })),
         onChange: (v) => {
           app.state.case = v;
@@ -279,20 +279,20 @@ export const CHAPTERS = [
       const c = CASES.find((x) => x.id === app.state.case);
       if (c.flow) return flowStats(app);
       return [
-        { k: '出事的层', v: [...new Set(c.nodes.map((id) => LAYER[NODE[id].layer].name))].join(' · '), cls: 'cj' },
-        { k: '事故', v: c.name, cls: 'cj', style: 'color:#ff9a9a' },
+        { k: '涉及层级', v: [...new Set(c.nodes.map((id) => LAYER[NODE[id].layer].name))].join(' · '), cls: 'cj' },
+        { k: '案例', v: c.name, cls: 'cj', style: 'color:#b44f5d' },
         { k: '时间', v: c.sub.split(' · ')[0] },
       ];
     },
     story: (app) => {
       const c = CASES.find((x) => x.id === app.state.case);
       if (c.flow) return flowStory(app);
-      return `<h2>风险 · ${c.sub}</h2><h3>${c.name}</h3>
+      return `<h2>风险 · 理解与防范 · ${c.sub}</h2><h3>${c.name}</h3>
         <p>${c.text}</p>
         <h4>涉及的参与者</h4><div class="chips">${c.nodes.map(chip).join('')}</div>
-        <div class="fact" style="margin-top:12px"><b class="t">规律</b>几乎每一次大灾难都发生在<b>有人替你保管、替你记账</b>的地方（交易所、借贷平台、跨链桥、银行），或者在<b>承诺稳定但储备不足</b>的地方。区块链本身很少出错，出错的是它周围的人和代码。</div>
+        <div class="fact" style="margin-top:12px"><b class="t">把案例转化为防范意识</b>这些案例提醒我们，理解<b>资产由谁保管、账目是否透明</b>，以及<b>储备是否充足</b>，是识别风险的重要起点。平台管理、银行体系与智能合约各有需要关注的环节；了解它们，才能更审慎地作出判断。</div>
         <p class="small" style="margin-top:12px">本站仅用于学习产业结构，不构成任何投资建议。</p>`;
     },
-    hint: (app) => (CASES.find((x) => x.id === app.state.case).flow ? flowHint(app) : '<b>红框</b>是出事的环节 · 右上角换案例'),
+    hint: (app) => (CASES.find((x) => x.id === app.state.case).flow ? flowHint(app) : '<b>红框</b>标出需要关注的环节 · 右上角换案例'),
   },
 ];

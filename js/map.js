@@ -235,7 +235,7 @@ export class MapView {
     const w = g.measureText(text).width + (small ? 10 : 14), h = small ? 17 : 21;
     x = clamp(x - w / 2, 4, this.W - w - 4);
     y = clamp(y - h - 8, 2, this.H - h - 2);
-    g.fillStyle = 'rgba(12, 13, 17, 0.94)';
+    g.fillStyle = 'rgba(255, 253, 248, 0.97)';
     g.strokeStyle = color;
     g.lineWidth = 1;
     g.beginPath();
@@ -275,11 +275,11 @@ export class MapView {
     for (const [a, b, color, alpha] of v.links || []) {
       const c = this.curve(a, b);
       if (c) {
-        this.stroke(c, color || '#fff', alpha ?? 0.35, 1.4);
+        this.stroke(c, color || '#476a57', alpha ?? 0.35, 1.4);
         // a slow bead to show it's a live relationship
         const f = (time * 0.25 + (a.length + b.length) * 0.13) % 1;
         const [x, y] = MapView.at(c, f);
-        this.dot(x, y, 2, color || '#fff', 0.8, true);
+        this.dot(x, y, 2, color || '#476a57', 0.8, true);
       }
     }
 
@@ -289,7 +289,7 @@ export class MapView {
   drawAmbient(dt) {
     for (const [a, b] of LINKS) {
       const c = this.curve(a, b);
-      if (c) this.stroke(c, '#ffffff', 0.035, 1);
+      if (c) this.stroke(c, '#476a57', 0.12, 1);
     }
     this.spawnT -= dt;
     if (this.spawnT <= 0 && this.amb.length < 14) {
