@@ -1,6 +1,6 @@
-import { NODE, FLOW, KINDS, LEDGERS, LAYERS } from './data.js?v=20261002-layer-lines';
-import { MapView } from './map.js?v=20261002-layer-lines';
-import { CHAPTERS } from './chapters.js?v=20261002-layer-lines';
+import { NODE, FLOW, KINDS, LEDGERS, LAYERS } from './data.js?v=20261002-clean-links';
+import { MapView } from './map.js?v=20261002-clean-links';
+import { CHAPTERS } from './chapters.js?v=20261002-clean-links';
 
 const $ = (s) => document.querySelector(s);
 const STEP_SECONDS = 3.8;
@@ -220,6 +220,13 @@ class App {
 
   hover(id, el) {
     const pop = $('#pop');
+    this.map.previewNode(id);
+    if (this.chapter?.id === 'layers') {
+      pop.hidden = true;
+      $('#hint').textContent = id ? `${NODE[id].name} · 连线表示直接往来 · 点击看详情` : '';
+      if (!id) $('#hint').innerHTML = this.chapter.hint(this);
+      return;
+    }
     if (!id) { pop.hidden = true; return; }
     const n = NODE[id];
     pop.innerHTML = `<h3 style="color:${LAYER[n.layer].color}">${n.name}</h3><div class="en">${n.full}</div><p>${n.role}</p>

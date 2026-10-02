@@ -1,6 +1,6 @@
 // The map: seven layer bands, one chip per participant, and a canvas underneath
 // that draws the links and the moving money.
-import { LAYERS, NODES, NODE, LINKS, KINDS } from './data.js?v=20261002-layer-lines';
+import { LAYERS, NODES, NODE, LINKS, KINDS } from './data.js?v=20261002-clean-links';
 
 const LAYER = Object.fromEntries(LAYERS.map((l) => [l.id, l]));
 const ROW = Object.fromEntries(LAYERS.map((l, i) => [l.id, i]));
@@ -141,6 +141,25 @@ export class MapView {
   // v: { focus:Set|null, sel, bad:Set, layer, links:[[a,b,color]], flow:{steps,cur,t}, ambient }
   setView(v) {
     this.view = v;
+    this.hovered = null;
+    this.applyView();
+  }
+
+  previewNode(id) {
+    if (!this.view.previewRelationships || this.hovered === id) return;
+    this.hovered = id;
+    this.applyView();
+  }
+
+  relationshipView() {
+    const v = this.view, id = this.hovered;
+    if (!v.previewRelationships || !id) return v;
+    const neighbours = LINKS.filter(([a, b]) => a === id || b === id).map(([a, b]) => a === id ? b : a);
+    return { ...v, sel: id, focus: new Set([id, ...neighbours]), links: neighbours.map((b) => [id, b, LAYER[NODE[id].layer].color, 0.55]) };
+  }
+
+  applyView() {
+    const v = this.relationshipView();
     const step = v.flow ? v.flow.steps[v.flow.cur] : null;
     for (const n of NODES) {
       const el = this.chips[n.id];
@@ -172,12 +191,16 @@ export class MapView {
     if (!A || !B) return null;
     const p0 = [A.x, A.y], p3 = [B.x, B.y];
     if (Math.abs(A.y - B.y) < this.rowH * 0.45) {
-      const dx = B.x - A.x;
-      const lift = Math.min(this.rowH * 0.9, Math.abs(dx) * 0.3) + 10;
-      const s = A.y <= this.H / 2 ? 1 : -1; // arc away from the middle of the map
-      return [p0, [A.x + dx * 0.2, A.y + s * lift], [B.x - dx * 0.2, B.y + s * lift], p3];
+      const dx = B.x - A.x, s = A.y <= this.H / 2 ? -1 : 1;
+      p0[1] += s * (A.h / 2 + 3);
+      p3[1] += s * (B.h / 2 + 3);
+      const rail = A.y + s * this.rowH * 0.5;
+      return [p0, [A.x + dx * 0.15, rail], [B.x - dx * 0.15, rail], p3];
     }
-    const my = (A.y + B.y) / 2;
+    const direction = Math.sign(B.y - A.y);
+    p0[1] += direction * (A.h / 2 + 3);
+    p3[1] -= direction * (B.h / 2 + 3);
+    const my = (p0[1] + p3[1]) / 2;
     return [p0, [A.x, my], [B.x, my], p3];
   }
   static at(c, t) {
@@ -208,28 +231,6 @@ export class MapView {
     g.stroke();
     g.restore();
   }
-  luminousLine(c, color, alpha, time) {
-    const g = this.ctx;
-    g.save();
-    g.shadowColor = color;
-    g.shadowBlur = 7;
-    const shimmer = this.motionQuery.matches ? 1 : 0.9 + 0.1 * Math.sin(time * 1.4);
-    this.stroke(c, color, Math.min(1, alpha + 0.2) * shimmer, 1.6);
-    // A soft highlight travels along the continuous line.
-    if (!this.motionQuery.matches) {
-      const head = (time * 0.18 + c[0][0] / Math.max(1, this.W)) % 1.18;
-      const start = Math.max(0, head - 0.18), end = Math.min(1, head);
-      g.globalAlpha = 0.6;
-      g.strokeStyle = color;
-      g.lineWidth = 2.8;
-      g.lineCap = 'round';
-      g.beginPath();
-      g.moveTo(...MapView.at(c, start));
-      for (let i = 1; i <= 12; i++) g.lineTo(...MapView.at(c, start + (end - start) * i / 12));
-      g.stroke();
-    }
-    g.restore();
-  }
   arrow(c, t, color, alpha, size = 5) {
     const g = this.ctx;
     const [x, y] = MapView.at(c, t), [dx, dy] = MapView.tangent(c, t);
@@ -244,41 +245,15 @@ export class MapView {
     g.fill();
     g.restore();
   }
-  sparkle(x, y, r, color, alpha = 1, under = false, glow = true) {
+  dot(x, y, r, color, alpha = 1, under = false) {
     const g = under ? this.ctx : this.tctx;
     g.save();
     g.globalAlpha = alpha;
-    g.shadowColor = color;
-    g.shadowBlur = glow ? r * 2.5 : 0;
     g.fillStyle = color;
     g.beginPath();
-    for (let i = 0; i < 8; i++) {
-      const angle = i * Math.PI / 4 - Math.PI / 2;
-      const radius = i % 2 === 0 ? r : r * 0.26;
-      const px = x + Math.cos(angle) * radius, py = y + Math.sin(angle) * radius;
-      if (i === 0) g.moveTo(px, py); else g.lineTo(px, py);
-    }
-    g.closePath();
+    g.arc(x, y, r, 0, Math.PI * 2);
     g.fill();
-    if (glow && r >= 4) {
-      g.shadowBlur = 0;
-      g.fillStyle = '#fffdf8';
-      g.beginPath();
-      g.arc(x, y, r * 0.17, 0, Math.PI * 2);
-      g.fill();
-    }
     g.restore();
-  }
-  starTrail(c, color, time, alpha = 0.5, size = 2.8, sparse = false) {
-    const distance = Math.hypot(c[3][0] - c[0][0], c[3][1] - c[0][1]);
-    const count = sparse ? 3 : clamp(Math.ceil(distance / 26), 4, 24);
-    for (let i = 0; i < count; i++) {
-      const t = (i + 0.5) / count;
-      const [x, y] = MapView.at(c, t);
-      // Slow, gentle shimmer; reduced-motion mode keeps a steady constellation.
-      const shimmer = this.motionQuery.matches ? 1 : 0.78 + 0.22 * Math.sin(time * 1.7 + i * 1.6);
-      this.sparkle(x, y, size * shimmer, color, alpha * shimmer, true, !sparse);
-    }
   }
   pill(x, y, text, color) {
     const g = this.tctx;
@@ -319,7 +294,7 @@ export class MapView {
 
   frame(dt, time) {
     if (!this.W) return;
-    const g = this.ctx, v = this.view;
+    const g = this.ctx, v = this.relationshipView();
     g.clearRect(0, 0, this.W, this.H);
     this.tctx.clearRect(0, 0, this.W, this.H);
 
@@ -328,26 +303,17 @@ export class MapView {
 
     for (const [a, b, color, alpha] of v.links || []) {
       const c = this.curve(a, b);
-      if (c) {
-        if (v.linkStyle === 'solid') {
-          this.luminousLine(c, color || '#42744e', alpha ?? 0.5, visualTime);
-          continue;
-        }
-        this.starTrail(c, color || '#42744e', visualTime, alpha ?? 0.5, 3.2);
-        const f = (visualTime * 0.25 + (a.length + b.length) * 0.13) % 1;
-        const [x, y] = MapView.at(c, f);
-        this.sparkle(x, y, 5, color || '#42744e', 0.9, true);
-      }
+      if (!c) continue;
+      const col = color || '#42744e';
+      this.stroke(c, col, alpha ?? 0.5, 1.25);
+      this.dot(...c[0], 2.1, col, 0.75, true);
+      this.dot(...c[3], 2.1, col, 0.75, true);
     }
 
     if (v.flow) this.drawFlow(v.flow, visualTime);
   }
 
   drawAmbient(dt, time) {
-    for (const [a, b] of LINKS) {
-      const c = this.curve(a, b);
-      if (c) this.starTrail(c, LAYER[NODE[a].layer].color, time, 0.24, 2, true);
-    }
     this.spawnT -= dt;
     if (this.spawnT <= 0 && this.amb.length < 14) {
       this.spawnT = 0.28 + Math.random() * 0.3;
@@ -361,12 +327,12 @@ export class MapView {
       if (!c) continue;
       const col = KINDS[p.k].color;
       const fade = Math.min(1, p.t * 5, (1 - p.t) * 5);
-      this.starTrail(c, col, time, 0.3 * fade, 2.4);
+      this.stroke(c, col, 0.16 * fade, 1);
       for (let k = 0; k < 4; k++) {
         const t = p.t - k * 0.03;
         if (t < 0) break;
         const [x, y] = MapView.at(c, t);
-        this.sparkle(x, y, 5 - k * 0.9, col, fade * (1 - k * 0.22), true);
+        this.dot(x, y, 2.6 - k * 0.5, col, fade * (1 - k * 0.22), true);
       }
     }
     this.amb = this.amb.filter((p) => p.t < 1);
@@ -381,7 +347,7 @@ export class MapView {
       if (s.from === s.to) continue;
       const c = this.curve(s.from, s.to);
       if (!c) continue;
-      this.starTrail(c, col, time, 0.38, 2.8);
+      this.stroke(c, col, 0.22, 1.1);
       this.arrow(c, 0.55, col, 0.45, 4);
     }
     const s = steps[cur];
@@ -396,23 +362,22 @@ export class MapView {
     const c = this.curve(s.from, s.to);
     if (!c) return;
     const travel = this.motionQuery.matches ? 1 : ease(clamp(t / 0.5, 0, 1));
-    this.stroke(c, col, 0.12, 1);
-    this.starTrail(c, col, time, 0.85, 4.2);
+    this.stroke(c, col, 0.75, 1.8);
     if (travel < 1) {
       for (let k = 0; k < 6; k++) {
         const tt = travel - k * 0.035;
         if (tt < 0) break;
         const [x, y] = MapView.at(c, tt);
-        this.sparkle(x, y, 7.5 - k * 1.1, col, 1 - k * 0.15);
+        this.dot(x, y, 3.6 - k * 0.5, col, 1 - k * 0.15);
       }
       const [x, y] = MapView.at(c, travel);
       this.pill(x, y, s.amt, col);
     } else {
       // arrived: keep a gentle stream going and park the label mid-way
-      for (let k = 0; k < 4; k++) {
-        const f = (time * 0.45 + k / 4) % 1;
+      for (let k = 0; k < 2; k++) {
+        const f = (time * 0.3 + k / 2) % 1;
         const [x, y] = MapView.at(c, f);
-        this.sparkle(x, y, 5.8, col, 0.85 * Math.sin(Math.PI * f));
+        this.dot(x, y, 2.8, col, 0.85 * Math.sin(Math.PI * f));
       }
       this.arrow(c, 0.55, col, 0.9, 5.5);
       this.ring(s.to, col, time);
